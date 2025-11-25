@@ -2,7 +2,7 @@
 import tkinter as tk
 import time
 
-class Bank():
+class Base_page():
     def __init__(self):
         self.main_win = tk.Tk()
         self.big_frame = tk.Frame(self.main_win)
@@ -50,11 +50,7 @@ class Bank():
 
         self.main_win.mainloop()
 
-
     def register(self):
-        """
-        """
-
         #remove the last page and creating a new frame for register page
         self.big_frame.pack_forget()
         self.register_main = tk.Frame(self.main_win)
@@ -103,5 +99,5 @@ class Bank():
 
     
 
-mian = Bank()
+mian = Base_page()
     
