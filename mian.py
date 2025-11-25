@@ -1,2 +1,2 @@
 import gui
-import encrypt
+import encrypt as enc
