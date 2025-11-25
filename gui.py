@@ -5,27 +5,28 @@ import time
 class Base_page():
     def __init__(self):
         self.main_win = tk.Tk()
-        self.big_frame = tk.Frame(self.main_win,width=300, height=200, bg="lightblue")
+        self.main_win.config(bg="#fde6a3")
+        self.big_frame = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
         self.big_frame.pack()
 
         #creating 4 frames to put labels, buttons and entries. 4 frames put in one big frame
-        self.frame1 = tk.Frame(self.big_frame,bg="lightblue")
+        self.frame1 = tk.Frame(self.big_frame,bg="#fde6a3")
         self.frame1.pack()
-        self.frame2 = tk.Frame(self.big_frame,bg="lightblue")
+        self.frame2 = tk.Frame(self.big_frame,bg="#fde6a3")
         self.frame2.pack()
-        self.frame3 = tk.Frame(self.big_frame,bg="lightblue")
+        self.frame3 = tk.Frame(self.big_frame,bg="#fde6a3")
         self.frame3.pack()
-        self.frame4 = tk.Frame(self.big_frame, bg="lightblue")
+        self.frame4 = tk.Frame(self.big_frame, bg="#fde6a3")
         self.frame4.pack()
 
 
         #a welcome label
-        self.label_welcome = tk.Label(self.frame1, text="Welcome", font=("Arial",20), bg="lightblue")
+        self.label_welcome = tk.Label(self.frame1, text="Welcome", font=("Arial",20), bg="#fde6a3")
         self.label_welcome.pack(expand=True)
 
 
         #Lable to guide user entering a user name
-        self.label_username = tk.Label(self.frame2, text="username:  ",bg="lightblue")
+        self.label_username = tk.Label(self.frame2, text="username:  ",bg="#fde6a3")
         self.label_username.pack(side="left")
         #Entry to input username
         self.enter_username = tk.Entry(self.frame2, width=20)
@@ -33,14 +34,14 @@ class Base_page():
 
 
         #Label to guide user entering a password
-        self.label_password = tk.Label(self.frame3, text="password:  ", bg="lightblue")
+        self.label_password = tk.Label(self.frame3, text="password:  ", bg="#fde6a3")
         self.label_password.pack(side="left")
         #Entry to input password
         self.enter_password = tk.Entry(self.frame3, width=20)
         self.enter_password.pack(side="right")
 
         #calling another function and page for login
-        self.login = tk.Button(self.frame4, text="Login", command=self.logging)
+        self.login = tk.Button(self.frame4, text="Login", command=self.logging, bg="#fde6a3")
         self.login.pack()
         
         #calling another function and page for creating new account
@@ -53,7 +54,7 @@ class Base_page():
     def register(self):
         #remove the last page and creating a new frame for register page
         self.big_frame.pack_forget()
-        self.register_main = tk.Frame(self.main_win,width=300, height=200, bg="lightblue")
+        self.register_main = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
         self.register_main.pack()
 
 
@@ -97,7 +98,7 @@ class Base_page():
 
         #remove last frame, creating a new frame that 
         self.big_frame.pack_forget()
-        self.choosing_frame = tk.Frame(self.main_win, width=300, height=200, bg="lightblue")
+        self.choosing_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.choosing_frame.pack()
 
         self.saving = tk.Button(self.choosing_frame, text="Saving account", command=self.saving_account)
@@ -111,7 +112,7 @@ class Base_page():
 
         #remove last frame, creating a new one 
         self.choosing_frame.pack_forget()
-        self.saving_frame = tk.Frame(self.main_win, width=300, height=200, bg="lightblue")
+        self.saving_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.saving_frame.pack()
 
     
