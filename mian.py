@@ -1,6 +1,7 @@
 
 import tkinter as tk
 import time
+import encrypt
 
 class Base_page():
     def __init__(self):
@@ -92,11 +93,20 @@ class Base_page():
     def logging(self):
         pass
 
-    def save_account():
+    def saving_account(self):
+        pass
+
+    def checking_account(self):
         pass
     
 class Data :
     def __init__(self):
+        self.username = ""
+        self.password = ""
+        self.balance = 0
+        self.transaction_history = []
+
+    def save_data(self):
         pass
 
     def balance(self):
@@ -108,9 +118,6 @@ class Data :
     def error_handle(self):
         pass
 
-class Encrypt:
-    def __init__(self):
-        pass
 
     
 
