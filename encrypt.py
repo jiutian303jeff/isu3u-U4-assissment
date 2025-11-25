@@ -12,7 +12,7 @@ class Encrypt:
         self.n = len(self.alphabet)
         self.accounts = {}
 
-    def generate_rotors(self, rotor1_offset=0, rotor2_offset=0):
+    def generate_rotors(self):
         self.rotor1 = self.alphabet.copy()
         self.rotor2 = self.alphabet.copy()
         self.reflector = self.alphabet.copy() 
@@ -20,15 +20,13 @@ class Encrypt:
         random.shuffle(self.rotor2)
         random.shuffle(self.reflector)
 
-        self.plugboard = {'A':'#', '#':'A', 'B':'$','$':'B', 'C':'&','&':'C'}
+        self.plugboard = {'A':'#', '#':'A', 'B':'$', '$':'B', 'C':'&', '&':'C'}
 
         return {
             "rotor1": self.rotor1,
             "rotor2": self.rotor2,
             "reflector": self.reflector,
             "plugboard": self.plugboard,
-            "rotor1_offset": 0,
-            "rotor2_offset": 0
         }
     
     def add_account(self, account_name, initial_data):
