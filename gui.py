@@ -59,7 +59,7 @@ class Base_page():
 
 
         #a label that indicate here to register
-        self.label_indicate = tk.Label(self.register_main, text="Here to register", font=("Arial",20))
+        self.label_indicate = tk.Label(self.register_main, text="Here to register", font=("Arial",20),bg="#fde6a3")
         self.label_indicate.pack(expand=True)
         
         #first frame for username entering
@@ -72,14 +72,14 @@ class Base_page():
 
 
         #label indicating here to register new username
-        self.creating_username = tk.Label(self.register_frame1, text="Enter a username:  ")
+        self.creating_username = tk.Label(self.register_frame1, text="Enter a username:  ",bg="#fde6a3")
         self.creating_username.pack(side="left")
         #entering new username
         self.enter_username = tk.Entry(self.register_frame1, width=20)
         self.enter_username.pack(side="right")
 
         #Label indicating here to register new password
-        self.creating_password = tk.Label(self.register_frame2, text="Enter a password:  ")
+        self.creating_password = tk.Label(self.register_frame2, text="Enter a password:  ",bg='#fde6a3')
         self.creating_password.pack(side="left")
         #entering new password
         self.enter_password = tk.Entry(self.register_frame2, width=20)
