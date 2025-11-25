@@ -45,7 +45,7 @@ class Base_page():
         self.login.pack(side="left")
         
         #calling another function and page for creating new account
-        self.create_account = tk.Button(self.frame4, text="Register", command=self.register,bg="#fde6a3")
+        self.create_account = tk.Button(self.frame4, text="Register", command=self.register, bg="#fde6a3")
         self.create_account.pack(side="right")
 
 
@@ -101,9 +101,9 @@ class Base_page():
         self.choosing_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.choosing_frame.pack()
 
-        self.saving = tk.Button(self.choosing_frame, text="Saving account", command=self.saving_account)
+        self.saving = tk.Button(self.choosing_frame, text="Saving account", command=self.saving_account,bg='#fde6a3')
         self.saving.pack()
-        self.checking = tk.Button(self.choosing_frame, text="checking account",command=self.checking_account)
+        self.checking = tk.Button(self.choosing_frame, text="checking account",command=self.checking_account,bg="#fde6a3")
         self.checking.pack()
 
 
@@ -113,7 +113,13 @@ class Base_page():
         #remove last frame, creating a new one 
         self.choosing_frame.pack_forget()
         self.saving_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
-        self.saving_frame.pack()
+        self.saving_frame.pack() 
+        
+        self.balance_label = tk.Label(self.saving_frame, text="Your balance is: %d"%balance, bg="#fde6a3")
+        self.balance_label.pack()
+
+        self.interest_label = tk.Label(self.saving_frame, text="your interest rate  is: 2.25%", bg="#fde6a3")
+        self.interest_label.pack()
 
     
         
