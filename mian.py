@@ -95,7 +95,22 @@ class Base_page():
     def save_account():
         pass
     
-    
+class Data :
+    def __init__(self):
+        pass
+
+    def balance(self):
+        pass
+
+    def trans_history(self):
+        pass
+
+    def error_handle(self):
+        pass
+
+class Encrypt:
+    def __init__(self):
+        pass
 
     
 
