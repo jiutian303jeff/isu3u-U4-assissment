@@ -42,11 +42,11 @@ class Base_page():
 
         #calling another function and page for login
         self.login = tk.Button(self.frame4, text="Login", command=self.logging, bg="#fde6a3")
-        self.login.pack()
+        self.login.pack(side="left")
         
         #calling another function and page for creating new account
-        self.create_account = tk.Button(self.frame4, text="Register", command=self.register)
-        self.create_account.pack()
+        self.create_account = tk.Button(self.frame4, text="Register", command=self.register,bg="#fde6a3")
+        self.create_account.pack(side="right")
 
 
         self.main_win.mainloop()
