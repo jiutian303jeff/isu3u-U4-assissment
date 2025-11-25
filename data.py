@@ -9,6 +9,9 @@ class Data :
         self.balance = 0
         self.transaction_history = []
 
+    def pull_data(self):
+        pass
+    
     def save_data(self):
         pass
 
