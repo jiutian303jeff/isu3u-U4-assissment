@@ -218,8 +218,23 @@ class Base_page():
     def transfering(self):
         pass
         
-    def withdraw(self):
-        pass
+    def withdraw(self, balance=0):
+        self.checking_frame.pack_forget()
+        self.withdraw_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
+        self.withdraw_frame.pack()
+        self.withdraw_amount = tk.Frame(self.withdraw_frame, bg="#fde6a3")
+        self.withdraw_amount.pack()
+
+        self.show_withdraw_info = tk.Label(self.withdraw_frame, text=self.balance_label)
+
+        self.withdraw_label = tk.Label(self.withdraw_amount, text="how much you want to with draw?",bg="#fde6a3")
+        self.withdraw_label.pack(side="left")
+
+        self.withdraw_enter = tk.Entry(self.withdraw_amount, width= 20)
+        self.withdraw_enter.pack(side='right')
+
+        self.withdraw_confirm = tk.Button(self.withdraw_amount, command=self.)
+
 
     def deposit(self):
         pass
@@ -228,7 +243,8 @@ class Base_page():
         self.username = self.enter_username.get()
         self.password = self.enter_password.get()
         pass
-
+    
+    def 
 
     # smt
 main = Base_page()
