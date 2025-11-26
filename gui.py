@@ -6,6 +6,9 @@ class Base_page():
     def __init__(self):
         self.main_win = tk.Tk()
         self.main_win.config(bg="#fde6a3")
+        self.last_page = None
+
+    def home_page(self):
         self.big_frame = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
         self.big_frame.pack()
 
@@ -54,20 +57,21 @@ class Base_page():
     def register(self):
         #remove the last page and creating a new frame for register page
         self.big_frame.pack_forget()
-        self.register_main = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
+        self.register_main = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.register_main.pack()
 
+        self.last_page = self.register_main
 
         #a label that indicate here to register
         self.label_indicate = tk.Label(self.register_main, text="Here to register", font=("Arial",20),bg="#fde6a3")
         self.label_indicate.pack(expand=True)
         
         #first frame for username entering
-        self.register_frame1 = tk.Frame(self.main_win)
+        self.register_frame1 = tk.Frame(self.register_main, bg='#fde6a3')
         self.register_frame1.pack()
 
         #second frame for password entering
-        self.register_frame2 = tk.Frame(self.main_win)
+        self.register_frame2 = tk.Frame(self.register_main,bg="#fde6a3")
         self.register_frame2.pack()
 
 
@@ -86,8 +90,11 @@ class Base_page():
         self.enter_password.pack(side="right")
 
         #click to save the data
-        self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.saving_account)
+        self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.creating_account, bg='#fde6a3')
+        self.register_button.pack()
 
+        self.back_to_main = tk.Button(self.register_main, text="Back to main page", command=self.back_main, bg="#fde6a3")
+        self.back_to_main.pack()
 
 
     def logging(self):
@@ -110,27 +117,120 @@ class Base_page():
 
     def saving_account(self, balance=0):
 
-        #remove last frame, creating a new one 
+        #remove last frame, creating a few new frames
         self.choosing_frame.pack_forget()
         self.saving_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.saving_frame.pack() 
+
+        self.show_save_info = tk.Frame(self.saving_frame, bg="#fde6a3")
+        self.show_save_info.pack()
+
+        self.sav_choosing = tk.Frame(self.saving_frame, bg="#fde6a3")
+        self.sav_choosing.pack()
+
+        self.quit_leave = tk.Frame(self.saving_frame, bg="#fde6a3")
+        self.quit_leave.pack()
+
+        #setting this page as the "last page"
+        self.last_page = self.saving_frame
+
+
         
-        self.balance_label = tk.Label(self.saving_frame, text="Your balance is: %d"%balance, bg="#fde6a3")
+        #showing balance and interest and transferring choice
+        self.balance_label = tk.Label(self.show_save_info, text="Hello %s!! Your balance is: %d"%(self.enter_username.get(),balance), bg="#fde6a3")
         self.balance_label.pack()
 
-        self.interest_label = tk.Label(self.saving_frame, text="your interest rate  is: 2.25%", bg="#fde6a3")
+        self.interest_label = tk.Label(self.show_save_info, text="your interest rate  is: 2.25%", bg="#fde6a3")
         self.interest_label.pack()
 
+        self.asking = tk.Label(self.sav_choosing, text="Whould you like to......", bg="#fde6a3")
+        self.asking.pack()
+
+        self.transfer = tk.Button(self.sav_choosing, text="Transfer founds", command=self.transfering,bg="#fde6a3")
+        self.transfer.pack()
+
+
+        #showing the user to quit the program or back to main page
+        self.quit = tk.Button(self.quit_leave, text="quit the program", command=self.quiting,bg="#fde6a3" )
+        self.quit.pack(side="left")
+
+        self.back_to_main = tk.Button(self.quit_leave, text="Back to home page", command=self.back_main, bg="#fde6a3")
+        self.back_to_main.pack(side="right")
+
     
+    def checking_account(self,balance=0):
+        self.choosing_frame.pack_forget()
+        self.checking_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
+        self.checking_frame.pack()
+
+        self.show_check_info = tk.Frame(self.checking_frame, bg="#fde6a3")
+        self.show_check_info.pack()
+
+        self.chec_choose = tk.Frame(self.checking_frame, bg="#fde6a3")
+        self.chec_choose.pack()
+
+        self.quit_and_leave = tk.Frame(self.checking_frame, bg="#fde6a3")
+        self.quit_and_leave.pack()
+
+        #setting this page as the "last page"
+        self.last_page = self.checking_frame
+
+
+        self.c_balance_label = tk.Label(self.show_check_info, text="Hello %s!! Your balance is: %d"%(self.enter_username.get(),balance), bg="#fde6a3")
+        self.c_balance_label.pack()
+
+        self.c_asking = tk.Label(self.chec_choose, text="Whould you like to......", bg="#fde6a3")
+        self.c_asking.pack()
+
+        self.withdraw_money = tk.Button(self.chec_choose, text="Withdraw money", command=self.withdraw,bg="#fde6a3")
+        self.withdraw_money.pack()
+        
+        self.deposit_money = tk.Button(self.chec_choose, text="Deposit money", command=self.deposit,bg="#fde6a3")
+        self.deposit_money.pack()
+
+
+        self.quit = tk.Button(self.quit_and_leave, text="quit the program", command=self.quiting,bg="#fde6a3" )
+        self.quit.pack(side="left")
+
+        self.back_to_main = tk.Button(self.quit_and_leave, text="Back to home page", command=self.back_main, bg="#fde6a3")
+        self.back_to_main.pack(side="right")
+
+
+
+
+
+
+
         
 
-    def checking_account(self):
+    
+    def back_main(self):
+        # destroy previous page if it exists
+        if self.last_page is not None:
+            self.last_page.pack_forget()
+        self.last_page = None
+        self.home_page()
+
+    def quiting(self):
+        self.main_win.quit()
+        self.main_win.destroy()
+        
+    def transfering(self):
+        pass
+        
+    def withdraw(self):
+        pass
+
+    def deposit(self):
         pass
     
-
+    def creating_account(self):
+        self.username = self.enter_username.get()
+        self.password = self.enter_password.get()
+        pass
 
 
     # smt
-
-mian = Base_page()
+main = Base_page()
+main.home_page()
     
