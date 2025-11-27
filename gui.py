@@ -225,6 +225,8 @@ class Base_page():
         self.withdraw_amount = tk.Frame(self.withdraw_frame, bg="#fde6a3")
         self.withdraw_amount.pack()
 
+        self.comfirm_withdraw = tk
+
 
         self.withdraw_label = tk.Label(self.withdraw_amount, text="how much you want to with draw?",bg="#fde6a3")
         self.withdraw_label.pack(side="left")
@@ -233,7 +235,7 @@ class Base_page():
         self.withdraw_enter.pack(side='right')
 
 
-        self.withdraw_confirm = tk.Button(self.withdraw_amount, command=self.start_withdraw)
+        self.withdraw_confirm = tk.Button(self.withdraw_amount, text="Confirm Withdraw",command=self.start_withdraw,bg="#fde6a3")
         self.withdraw_confirm.pack()
 
 
