@@ -3,14 +3,14 @@ Docstring for data
 """
 
 class Data:
-    def __init__(self, username="", password="", balance=0, transaction_history=None, encrypt_manager=None, filename="encrypted_data.txt"):
+    def __init__(self, username="", password="", balance=0, transaction_history=None, encrypt_method=None, filename="encrypted_data.txt"):
         self.username = username
         self.password = password
         self.balance = balance
         self.transaction_history = transaction_history or []
         self.filename = filename
-        if encrypt_manager is not None:
-            self.manager = encrypt_manager
+        if encrypt_method is not None:
+            self.manager = encrypt_method
         else:
             try:
                 from encrypt import Encrypt
