@@ -225,7 +225,12 @@ class Base_page():
         self.withdraw_amount = tk.Frame(self.withdraw_frame, bg="#fde6a3")
         self.withdraw_amount.pack()
 
+<<<<<<< HEAD
         self.comfirm_withdraw = tk
+=======
+        self.confirm_withdraw = tk.Frame(self.withdraw_frame, bg="#fde6a3")
+        self.confirm_withdraw.pack()
+>>>>>>> 4b36d1bab8556a74d6da79cf7dddf51123ddd052
 
 
         self.withdraw_label = tk.Label(self.withdraw_amount, text="how much you want to with draw?",bg="#fde6a3")
@@ -235,7 +240,11 @@ class Base_page():
         self.withdraw_enter.pack(side='right')
 
 
+<<<<<<< HEAD
         self.withdraw_confirm = tk.Button(self.withdraw_amount, text="Confirm Withdraw",command=self.start_withdraw,bg="#fde6a3")
+=======
+        self.withdraw_confirm = tk.Button(self.confirm_withdraw, text="Confirm Withdraw",command=self.start_withdraw,bg="#fde6a3")
+>>>>>>> 4b36d1bab8556a74d6da79cf7dddf51123ddd052
         self.withdraw_confirm.pack()
 
 
@@ -249,7 +258,20 @@ class Base_page():
     
 
     def start_withdraw(self):
-        pass
+
+
+        #add the withdraw proccess function here, bro
+
+        self.withdraw_confirm.pack_forget()
+
+        self.last_page = self.withdraw_frame
+
+        self.withdraw_success = tk.Label(self.confirm_withdraw, text="Withdraw Success!", bg="#fde6a3")
+        self.withdraw_success.pack()
+
+        self.back_to_main = tk.Button(self.confirm_withdraw, text="Back to main page",bg="#fde6a3",command=self.back_main)
+        self.back_to_main.pack()
+
 
     # smt
 main = Base_page()
