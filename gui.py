@@ -1,3 +1,7 @@
+"""
+
+"""
+
 
 import tkinter as tk
 import time
@@ -222,11 +226,13 @@ class Base_page():
         self.checking_frame.pack_forget()
         self.withdraw_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.withdraw_frame.pack()
+
         self.withdraw_amount = tk.Frame(self.withdraw_frame, bg="#fde6a3")
         self.withdraw_amount.pack()
 
         self.confirm_withdraw = tk.Frame(self.withdraw_frame, bg="#fde6a3")
         self.confirm_withdraw.pack()
+
 
 
         self.withdraw_label = tk.Label(self.withdraw_amount, text="how much you want to with draw?",bg="#fde6a3")
@@ -241,11 +247,41 @@ class Base_page():
 
 
     def deposit(self):
-        pass
+        self.checking_frame.pack_forget()
+        self.deposit_frame = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
+        self.deposit_frame.pack()
+
+        self.deposit_amount = tk.Frame(self.deposit_frame, bg="#fde6a3")
+        self.deposit_amount.pack()
+
+        self.confirm_deposit = tk.Frame(self.deposit_frame, bg="#fde6a3")
+        self.confirm_deposit.pack()
+
+
+
+        self.deposit_label = tk.Label(self.deposit_amount, text="how much you want to deposit?",bg="#fde6a3")
+        self.deposit_label.pack(side="left")
+
+        self.deposit_enter = tk.Entry(self.deposit_amount, width= 20)
+        self.deposit_enter.pack(side='right')
+
+
+        self.deposit_confirm = tk.Button(self.confirm_deposit, text="Confirm Withdraw",command=self.start_deposit,bg="#fde6a3")
+        self.deposit_confirm.pack()
+
+
+
     
     def creating_account(self):
         self.username = self.enter_username.get()
         self.password = self.enter_password.get()
+        self.register_button.pack_forget()
+
+        #here to save the register user name and password bro
+        #remember that if account exist, should have a label indicating it
+
+        self.register_success = tk.Label(self.register_main, text="Registeration Success!",bg="#fde6a3")
+        self.register_success.pack()
         pass
     
 
@@ -262,6 +298,19 @@ class Base_page():
         self.withdraw_success.pack()
 
         self.back_to_main = tk.Button(self.confirm_withdraw, text="Back to main page",bg="#fde6a3",command=self.back_main)
+        self.back_to_main.pack()
+
+    def start_deposit(self):
+        #add the deposit proccess function here, bro
+
+        self.deposit_confirm.pack_forget()
+
+        self.last_page = self.deposit_frame
+
+        self.deposit_success = tk.Label(self.confirm_deposit, text="Deposit Success!", bg="#fde6a3")
+        self.deposit_success.pack()
+
+        self.back_to_main = tk.Button(self.confirm_deposit, text="Back to main page",bg="#fde6a3",command=self.back_main)
         self.back_to_main.pack()
 
 
