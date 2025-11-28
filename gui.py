@@ -11,6 +11,9 @@ class Base_page():
         self.main_win = tk.Tk()
         self.main_win.config(bg="#fde6a3")
         self.last_page = None
+        current_time_struct = time.localtime()
+        self.time_date = time.strftime("%Y-%m-%d", current_time_struct)
+        self.time_time = time.strftime("%y-%m-%d, %H:%M:%S", current_time_struct)
 
     def home_page(self):
         self.big_frame = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
@@ -112,6 +115,8 @@ class Base_page():
         self.choosing_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.choosing_frame.pack()
 
+        self.time = tk.Label(self.choosing_frame, text = self.time_date , font=("Arial",20 ), bg='#fde6a3')
+        self.time.pack()
         self.saving = tk.Button(self.choosing_frame, text="Saving account", command=self.saving_account,bg='#fde6a3')
         self.saving.pack()
         self.checking = tk.Button(self.choosing_frame, text="checking account",command=self.checking_account,bg="#fde6a3")
@@ -198,14 +203,6 @@ class Base_page():
 
         self.back_to_main = tk.Button(self.quit_and_leave, text="Back to home page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack(side="right")
-
-
-
-
-
-
-
-        
 
     
     def back_main(self):
