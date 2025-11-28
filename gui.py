@@ -122,6 +122,9 @@ class Base_page():
         self.checking = tk.Button(self.choosing_frame, text="checking account",command=self.checking_account,bg="#fde6a3")
         self.checking.pack()
 
+        self.quit = tk.Button(self.choosing_frame, text="Quit", command=self.quiting, bg="#fde6a3")
+        self.quit.pack()    
+
 
 
     def saving_account(self, balance=0):
