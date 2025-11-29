@@ -24,7 +24,6 @@ class Animation:
         self.splash_frame.pack(fill="both", expand=True)
 
         self.frames = []
-
         base_path = r"D:\git_reop\isu3u-U4-assissment\ezgif-split"
 
         for i in range(16): 
