@@ -6,14 +6,64 @@
 import tkinter as tk
 import time
 
-class Base_page():
+class Animation:
     def __init__(self):
-        self.main_win = tk.Tk()
+        # ONE root window only
+        self.root = tk.Tk()
+        self.root.title("Splash Screen")
+        self.stop_animation = True
+
+        # Show splash
+        self.show_splash()
+
+        self.root.mainloop()
+        
+
+    def show_splash(self):
+        self.splash_frame = tk.Frame(self.root, bg="white")
+        self.splash_frame.pack(fill="both", expand=True)
+
+        self.frames = []
+
+        base_path = r"D:\git_reop\isu3u-U4-assissment\ezgif-split"
+
+        for i in range(16): 
+            filename = fr"{base_path}\frame_{i:02d}_delay-0.05s.gif"
+            self.frames.append(tk.PhotoImage(file=filename))
+
+        self.frame_index = 0
+        self.splash_label = tk.Label(self.splash_frame, image=self.frames[0])
+        self.splash_label.pack()
+        self.label = tk.Label(self.splash_frame, text="Loading......")
+        self.label.pack()
+
+        self.animate_frames()
+        self.root.after(5000, self.open_main)
+
+    def animate_frames(self):
+        if not self.stop_animation:
+            return
+        
+        self.splash_label.config(image=self.frames[self.frame_index])
+
+        self.frame_index = (self.frame_index + 1) % len(self.frames)
+
+        self.root.after(120, self.animate_frames)
+
+    def open_main(self):
+        self.stop_animation = False
+        self.splash_frame.destroy()
+        Base_page(self.root)
+
+class Base_page(Animation):
+    def __init__(self,root):
+        self.main_win = root
         self.main_win.config(bg="#fde6a3")
         self.last_page = None
         current_time_struct = time.localtime()
         self.time_date = time.strftime("%Y-%m-%d", current_time_struct)
         self.time_time = time.strftime("%y-%m-%d, %H:%M:%S", current_time_struct)
+        self.home_page()
 
     def home_page(self):
         self.big_frame = tk.Frame(self.main_win,width=300, height=200, bg="#fde6a3")
@@ -314,7 +364,10 @@ class Base_page():
         self.back_to_main.pack()
 
 
-    # smt
-main = Base_page()
-main.home_page()
+    
+
+
+
+main = Animation()
+
     
