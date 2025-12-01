@@ -20,7 +20,7 @@ class Animation:
         
 
     def show_splash(self):
-        self.splash_frame = tk.Frame(self.root, bg="white")
+        self.splash_frame = tk.Frame(self.root, bg="#fde6a3")
         self.splash_frame.pack(fill="both", expand=True)
 
         self.frames = []
@@ -33,7 +33,7 @@ class Animation:
         self.frame_index = 0
         self.splash_label = tk.Label(self.splash_frame, image=self.frames[0])
         self.splash_label.pack()
-        self.label = tk.Label(self.splash_frame, text="Loading......")
+        self.label = tk.Label(self.splash_frame, text="Loading......",bg="#fde6a3")
         self.label.pack()
 
         self.animate_frames()
