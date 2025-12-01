@@ -146,8 +146,13 @@ class Base_page:
         self.enter_password = tk.Entry(self.register_frame2, width=20, show='*')
         self.enter_password.pack(side="right")
 
-        self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.creating_account, bg='#fde6a3')
-        self.register_button.pack()
+        if self.enter_password and self.enter_username is not "":
+            self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.creating_account, bg='#fde6a3')
+            self.register_button.pack()
+            
+        elif self.enter_password and self.enter_username is "":
+            messagebox.showerror("login failed", "Username not found")
+            return
 
         self.back_to_main = tk.Button(self.register_main, text="Back to main page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack()
