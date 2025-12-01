@@ -460,6 +460,9 @@ class Base_page:
 
         self.deposit_confirm = tk.Button(self.confirm_deposit, text="Confirm Deposit", command=self.start_deposit, bg="#fde6a3")
         self.deposit_confirm.pack()
+        self.back_to_accounts = tk.Button(self.confirm_deposit, text="Back to accounts", command=self.save_check, bg="#fde6a3")
+        self.back_to_accounts.pack()
+        
 
     def creating_account(self):
         username = self.enter_username.get().strip()
