@@ -88,6 +88,33 @@ class Base_page:
             except Exception:
                 pass
 
+    def validate_password(self, password: str):
+        """Return (True, '') if password meets policy, else (False, message).
+
+        Policy:
+        - length between 6 and 16 characters (inclusive)
+        - at least one uppercase letter
+        - at least one lowercase letter
+        - at least one symbol from the allowed set
+        """
+        reasons = []
+        if not (6 <= len(password) <= 16):
+            reasons.append("Password must be 6-16 characters long.")
+
+        if not any(c.isupper() for c in password):
+            reasons.append("Password must contain at least one uppercase letter.")
+
+        if not any(c.islower() for c in password):
+            reasons.append("Password must contain at least one lowercase letter.")
+
+        allowed_symbols = set("!@#$%^&*()_-+={[}]|\"':;?/>.<,}")
+        if not any(c in allowed_symbols for c in password):
+            reasons.append("Password must contain at least one symbol: ! @ # $ % ^ & * ( ) _ - + = { [ ] } | \" ' : ; ? / > . < , }")
+
+        if reasons:
+            return False, "\n".join(reasons)
+        return True, ""
+
     def home_page(self):
         self.big_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.big_frame.pack()
@@ -100,6 +127,8 @@ class Base_page:
         self.frame3.pack()
         self.frame4 = tk.Frame(self.big_frame, bg="#fde6a3")
         self.frame4.pack()
+        self.frame5 = tk.Frame(self.big_frame, bg="#fde6a3")
+        self.frame5.pack()
 
         self.label_welcome = tk.Label(self.frame1, text="Welcome", font=("Arial", 20), bg="#fde6a3")
         self.label_welcome.pack(expand=True)
@@ -119,6 +148,9 @@ class Base_page:
         
         self.create_account = tk.Button(self.frame4, text="Register", command=self.register, bg="#fde6a3")
         self.create_account.pack(side="right")
+
+        self.quit = tk.Button(self.frame5, text="Quit", command=self.quiting, bg="#fde6a3")
+        self.quit.pack(side="bottom") 
 
     def register(self):
         self.big_frame.pack_forget()
@@ -186,7 +218,11 @@ class Base_page:
         self.checking.pack()
 
         self.quit = tk.Button(self.choosing_frame, text="Quit", command=self.quiting, bg="#fde6a3")
-        self.quit.pack()    
+        self.quit.pack()
+
+        # Log out button - clears current session and returns to home page
+        self.logout_button = tk.Button(self.choosing_frame, text="Log out", command=self.logout, bg="#fde6a3")
+        self.logout_button.pack()
 
     def saving_account(self, balance=None):
         # use current account balance if available
@@ -303,6 +339,24 @@ class Base_page:
         if self.last_page is not None:
             self.last_page.pack_forget()
         self.last_page = None
+        self.home_page()
+
+    def logout(self):
+        """Log out current user and return to the home/login page."""
+        # Clear current session data
+        if hasattr(self, "current_data"):
+            try:
+                del self.current_data
+            except Exception:
+                self.current_data = None
+
+        messagebox.showinfo("Logged out", "You have been logged out.")
+
+        # Clear any frames and return to the home page
+        try:
+            self.clear_frames()
+        except Exception:
+            pass
         self.home_page()
 
     def quiting(self):
@@ -462,7 +516,7 @@ class Base_page:
         self.deposit_confirm.pack()
         self.back_to_accounts = tk.Button(self.confirm_deposit, text="Back to accounts", command=self.save_check, bg="#fde6a3")
         self.back_to_accounts.pack()
-        
+
 
     def creating_account(self):
         username = self.enter_username.get().strip()
@@ -472,6 +526,12 @@ class Base_page:
         # Validate inputs: do not allow empty username or password
         if not username or not password:
             messagebox.showerror("Registration Failed", "Username and password cannot be empty.")
+            return
+
+        # Validate password policy
+        ok, msg = self.validate_password(password)
+        if not ok:
+            messagebox.showerror("Registration Failed", msg)
             return
 
         d = Data(username=username, password=password, balance=initial_balance,
@@ -554,5 +614,3 @@ class Base_page:
 
         # show the account chooser
         self.save_check()
-
-main = Animation()
