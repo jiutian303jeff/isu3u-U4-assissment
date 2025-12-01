@@ -70,6 +70,24 @@ class Base_page:
         self.time_time = time.strftime("%y-%m-%d, %H:%M:%S", current_time_struct)
         self.home_page()
 
+    # helper: destroy any widget attributes before opening a new view
+    def clear_frames(self):
+        # find attributes that look like tkinter widgets (have destroy())
+        names = [n for n, v in vars(self).items() if hasattr(v, "destroy")]
+        for name in names:
+            # avoid destroying the root window
+            if name in ("main_win", "root"):
+                continue
+            try:
+                widget = getattr(self, name)
+                widget.destroy()
+            except Exception:
+                pass
+            try:
+                delattr(self, name)
+            except Exception:
+                pass
+
     def home_page(self):
         self.big_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.big_frame.pack()
@@ -152,7 +170,9 @@ class Base_page:
         self.show_account_home()
 
     def save_check(self):
-        self.big_frame.pack_forget()
+        # ensure previous frames are removed before creating the account chooser
+        self.clear_frames()
+
         self.choosing_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.choosing_frame.pack()
 
@@ -171,7 +191,21 @@ class Base_page:
         if balance is None and hasattr(self, "current_data"):
             balance = self.current_data.balance
 
-        self.choosing_frame.pack_forget()
+        # safe username lookup: prefer current_data, fallback to entry (guarded)
+        if hasattr(self, "current_data") and getattr(self, "current_data") is not None:
+            username_display = self.current_data.username
+        else:
+            try:
+                username_display = self.enter_username.get()
+            except Exception:
+                username_display = ""
+
+        # remove previous chooser frame and build saving view
+        try:
+            self.choosing_frame.pack_forget()
+        except Exception:
+            pass
+
         self.saving_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.saving_frame.pack() 
 
@@ -186,7 +220,7 @@ class Base_page:
 
         self.last_page = self.saving_frame
 
-        self.balance_label = tk.Label(self.show_save_info, text="Hello %s!! Your balance is: %.2f" % (self.enter_username.get(), balance), bg="#fde6a3")
+        self.balance_label = tk.Label(self.show_save_info, text="Hello %s!! Your balance is: %.2f" % (username_display, balance), bg="#fde6a3")
         self.balance_label.pack()
 
         self.interest_label = tk.Label(self.show_save_info, text="Your interest rate is: 2.25%", bg="#fde6a3")
@@ -201,15 +235,32 @@ class Base_page:
         self.quit = tk.Button(self.quit_leave, text="Quit the program", command=self.quiting, bg="#fde6a3")
         self.quit.pack(side="left")
 
-        self.back_to_main = tk.Button(self.quit_leave, text="Back to home page", command=self.back_main, bg="#fde6a3")
+        self.back_to_main = tk.Button(self.quit_leave, text="Back to main page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack(side="right")
+
+        # new: add button to return to account choosing page
+        self.back_to_accounts = tk.Button(self.quit_leave, text="Back to accounts", command=self.save_check, bg="#fde6a3")
+        self.back_to_accounts.pack(side="right")
 
     def checking_account(self, balance=None):
         # use current account balance if available
         if balance is None and hasattr(self, "current_data"):
             balance = self.current_data.balance
 
-        self.choosing_frame.pack_forget()
+        # safe username lookup: prefer current_data, fallback to entry (guarded)
+        if hasattr(self, "current_data") and getattr(self, "current_data") is not None:
+            username_display = self.current_data.username
+        else:
+            try:
+                username_display = self.enter_username.get()
+            except Exception:
+                username_display = ""
+
+        try:
+            self.choosing_frame.pack_forget()
+        except Exception:
+            pass
+
         self.checking_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.checking_frame.pack()
 
@@ -224,7 +275,7 @@ class Base_page:
 
         self.last_page = self.checking_frame
 
-        self.c_balance_label = tk.Label(self.show_check_info, text="Hello %s!! Your balance is: %.2f" % (self.enter_username.get(), balance), bg="#fde6a3")
+        self.c_balance_label = tk.Label(self.show_check_info, text="Hello %s!! Your balance is: %.2f" % (username_display, balance), bg="#fde6a3")
         self.c_balance_label.pack()
 
         self.c_asking = tk.Label(self.chec_choose, text="Would you like to......", bg="#fde6a3")
@@ -241,6 +292,10 @@ class Base_page:
 
         self.back_to_main = tk.Button(self.quit_and_leave, text="Back to home page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack(side="right")
+
+        # new: add button to return to account choosing page
+        self.back_to_accounts = tk.Button(self.quit_and_leave, text="Back to accounts", command=self.save_check, bg="#fde6a3")
+        self.back_to_accounts.pack(side="right")
 
     def back_main(self):
         if self.last_page is not None:
