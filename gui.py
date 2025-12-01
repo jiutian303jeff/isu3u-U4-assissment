@@ -2,16 +2,18 @@
 
 """
 
-
+from data import Data
 import tkinter as tk
 import time
 
 class Animation:
-    def __init__(self):
+    def __init__(self, manager=None):
         # ONE root window only
         self.root = tk.Tk()
         self.root.title("Splash Screen")
         self.stop_animation = True
+
+        self.manager = manager
 
         # Show splash
         self.show_splash()
@@ -155,7 +157,22 @@ class Base_page(Animation):
 
     def logging(self):
         #some function taht checking if the user name and password exist and correct
-        self.save_check()
+        username = self.enter_username.get().strip()
+        password = self.enter_password.get().strip()
+
+        d = Data(username=username, encrypt_manager=self.manager, filename_template="encrypted_{username}.txt")
+        ok = d.pull_data(username)
+        if not ok:
+            tk.messagebox.showerror("login failed", "Username not found")
+            return
+
+        if d.password != password:
+            tk.messagebox.showerror("login failed", "Incorrect password")
+            return
+
+        # successful login
+        self.current_data = d
+        self.show_account_home()
 
     def save_check(self):
 
@@ -318,20 +335,73 @@ class Base_page(Animation):
         self.deposit_confirm = tk.Button(self.confirm_deposit, text="Confirm Withdraw",command=self.start_deposit,bg="#fde6a3")
         self.deposit_confirm.pack()
 
+    def ui_deposit(self):
+        def do_deposit():
+            amt = entry.get().strip()
+            ok = self.current_data.deposit(amt, note="GUI deposit")
+            if ok:
+                tk.messagebox.showinfo("Success", f"Deposited ${amt}")
+                # 更新顯示（刷新頁面或更新 label）
+                top.destroy()
+                self.show_account_home()
+            else:
+                tk.messagebox.showerror("failed", "Deposit failed (invalid amount)")
+
+        top = tk.Toplevel(self.main_win)
+        top.title("Deposit")
+        entry = tk.Entry(top)
+        entry.pack()
+        btn = tk.Button(top, text="Confirm", command=do_deposit)
+        btn.pack()
+
+
+    def ui_transfer(self):
+        def do_transfer():
+            target = entry_target.get().strip()
+            amt = entry_amt.get().strip()
+            ok = self.current_data.transfer(target, amt, note="GUI transfer")
+            if ok:
+                tk.messagebox.showinfo("Success", f"Transferred ${amt} to {target}")
+                top.destroy()
+                self.show_account_home()
+            else:
+                tk.messagebox.showerror("Failed", "Transfer failed (insufficient balance or account does not exist)")
+
+        top = tk.Toplevel(self.main_win)
+        top.title("Transfer")
+        entry_target = tk.Entry(top)
+        entry_target.pack()
+        entry_amt = tk.Entry(top)
+        entry_amt.pack()
+        btn = tk.Button(top, text="Confirm", command=do_transfer)
+        btn.pack()
 
 
     
     def creating_account(self):
-        self.username = self.enter_username.get()
-        self.password = self.enter_password.get()
-        self.register_button.pack_forget()
+        username = self.enter_username.get().strip()
+        password = self.enter_password.get().strip()
+        # the initial balance is set to 0
+        initial_balance = 0
 
-        #here to save the register user name and password bro
-        #remember that if account exist, should have a label indicating it
+        d = Data(username=username, password=password, balance=initial_balance,
+                encrypt_manager=self.manager, filename_template="encrypted_{username}.txt")
 
-        self.register_success = tk.Label(self.register_main, text="Registeration Success!",bg="#fde6a3")
-        self.register_success.pack()
-        pass
+        # Add a record for account creation
+        d.transaction_history.append(f"Account created at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+
+        ok = d.save_data()
+        if ok:
+            try:
+                saver = getattr(self.manager, "save_keys", None)
+                if callable(saver):
+                    saver("multi_accounts_keys.txt")
+            except:
+                pass
+            tk.messagebox.showinfo("Registration Successful", f"{username} has been created")
+            self.back_main()
+        else:
+            tk.messagebox.showerror
     
 
     def start_withdraw(self):
