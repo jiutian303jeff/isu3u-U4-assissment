@@ -46,7 +46,7 @@ class Animation:
         if not self.stop_animation:
             return
         
-        self.splash_label.config(image=self.frames[self.frame_index])
+        self.splash_label.config(image=self.frames[self.frame_index],bg="#fde6a3")
 
         self.frame_index = (self.frame_index + 1) % len(self.frames)
 
