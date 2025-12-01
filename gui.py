@@ -310,7 +310,116 @@ class Base_page:
         self.main_win.destroy()
         
     def transfering(self):
-        pass
+        # Build transfer UI: target account, amount, current user's password
+        try:
+            self.last_page.pack_forget()
+        except Exception:
+            pass
+
+        self.transfer_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
+        self.transfer_frame.pack()
+
+        self.transfer_top = tk.Frame(self.transfer_frame, bg="#fde6a3")
+        self.transfer_top.pack()
+
+        self.transfer_mid = tk.Frame(self.transfer_frame, bg="#fde6a3")
+        self.transfer_mid.pack()
+
+        self.transfer_bot = tk.Frame(self.transfer_frame, bg="#fde6a3")
+        self.transfer_bot.pack()
+
+        self.to_label = tk.Label(self.transfer_top, text="Account transfer to:", bg="#fde6a3")
+        self.to_label.pack(side="left")
+        self.to_entry = tk.Entry(self.transfer_top, width=20)
+        self.to_entry.pack(side="right")
+
+        self.amount_label = tk.Label(self.transfer_mid, text="Amount:", bg="#fde6a3")
+        self.amount_label.pack(side="left")
+        self.amount_entry = tk.Entry(self.transfer_mid, width=20)
+        self.amount_entry.pack(side="right")
+
+        self.pw_label = tk.Label(self.transfer_bot, text="Your password:", bg="#fde6a3")
+        self.pw_label.pack(side="left")
+        self.pw_entry = tk.Entry(self.transfer_bot, width=20, show='*')
+        self.pw_entry.pack(side="right")
+
+        self.confirm_transfer = tk.Button(self.transfer_frame, text="Confirm Transfer", command=self.start_transfer, bg="#fde6a3")
+        self.confirm_transfer.pack()
+
+        self.transfer_back = tk.Button(self.transfer_frame, text="Back to accounts", command=self.save_check, bg="#fde6a3")
+        self.transfer_back.pack()
+
+        self.last_page = self.transfer_frame
+
+    def start_transfer(self):
+        # Validate current_data
+        if not hasattr(self, "current_data") or self.current_data is None:
+            messagebox.showerror("Error", "No account loaded.")
+            return
+
+        target_username = self.to_entry.get().strip()
+        amt_text = self.amount_entry.get().strip()
+        entered_pw = self.pw_entry.get().strip()
+
+        if not target_username:
+            messagebox.showerror("Transfer Failed", "Target account cannot be empty.")
+            return
+
+        if not amt_text:
+            messagebox.showerror("Transfer Failed", "Amount cannot be empty.")
+            return
+
+        try:
+            amount = float(amt_text)
+        except ValueError:
+            messagebox.showerror("Transfer Failed", "Please enter a valid number for amount.")
+            return
+
+        if amount <= 0:
+            messagebox.showerror("Transfer Failed", "Amount must be greater than zero.")
+            return
+
+        # verify password
+        if entered_pw != self.current_data.password:
+            messagebox.showerror("Transfer Failed", "Incorrect password for current account.")
+            return
+
+        # ensure sufficient funds
+        if amount > self.current_data.balance:
+            messagebox.showerror("Transfer Failed", "Insufficient funds.")
+            return
+
+        # load target account
+        target = Data(username=target_username, encrypt_manager=self.manager, filename_template="encrypted_{username}.txt")
+        ok = target.pull_data(target_username)
+        if not ok:
+            messagebox.showerror("Transfer Failed", "Target account not found.")
+            return
+
+        # perform transfer: deduct from current, add to target
+        note = f"Transfer to {target_username} at {time.strftime('%Y-%m-%d %H:%M:%S')}"
+        ok1 = self.current_data.transfer(target_username, amount, note=note)
+        if not ok1:
+            messagebox.showerror("Transfer Failed", "Could not withdraw from current account.")
+            return
+
+        # deposit into target (deposit saves file)
+        note_target = f"Received from {self.current_data.username} at {time.strftime('%Y-%m-%d %H:%M:%S')}"
+        ok2 = target.deposit(amount, note=note_target)
+        if not ok2:
+            # try to rollback current (best-effort)
+            self.current_data.deposit(amount, note=f"Rollback of failed transfer to {target_username}")
+            messagebox.showerror("Transfer Failed", "Could not credit target account. Transfer rolled back.")
+            return
+
+        messagebox.showinfo("Transfer Successful", f"Transferred {amount:.2f} to {target_username}.")
+
+        # return to checking view with updated balance
+        try:
+            self.transfer_frame.pack_forget()
+        except Exception:
+            pass
+        self.checking_account(self.current_data.balance)
         
     def withdraw(self):
         self.checking_frame.pack_forget()
