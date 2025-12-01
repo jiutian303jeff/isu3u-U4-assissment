@@ -24,7 +24,7 @@ class Animation:
         self.splash_frame.pack(fill="both", expand=True)
 
         self.frames = []
-        base_path = r"D:\git_reop\isu3u-U4-assissment\ezgif-split"
+        base_path = r"ezgif-split"
 
         for i in range(16): 
             filename = fr"{base_path}\frame_{i:02d}_delay-0.05s.gif"
