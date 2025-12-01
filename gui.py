@@ -146,18 +146,10 @@ class Base_page:
         self.enter_password = tk.Entry(self.register_frame2, width=20, show='*')
         self.enter_password.pack(side="right")
 
-        if self.enter_password and self.enter_username is not "":
-            self.account_staus = True
-        else :
-            self.account_staus = False
-
-
+        # Always show the register button; validation happens when the
+        # user clicks it (in `creating_account`).
         self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.creating_account, bg='#fde6a3')
-        if self.account_staus == True:
-            self.register_button.pack()
-        elif self.enter_password and self.enter_username == False:
-            messagebox.showerror("login failed", "Username not found")
-            return
+        self.register_button.pack()
         
         self.back_to_main = tk.Button(self.register_main, text="Back to main page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack()
@@ -364,6 +356,11 @@ class Base_page:
         username = self.enter_username.get().strip()
         password = self.enter_password.get().strip()
         initial_balance = 0
+
+        # Validate inputs: do not allow empty username or password
+        if not username or not password:
+            messagebox.showerror("Registration Failed", "Username and password cannot be empty.")
+            return
 
         d = Data(username=username, password=password, balance=initial_balance,
                 encrypt_manager=self.manager, filename_template="encrypted_{username}.txt")
