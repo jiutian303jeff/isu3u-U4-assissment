@@ -6,6 +6,8 @@
 from data import Data
 import tkinter as tk
 import time
+import tkinter.messagebox as messagebox
+from encrypt import Encrypt
 
 class Animation:
     def __init__(self, manager=None):
@@ -13,7 +15,8 @@ class Animation:
         self.root.title("Splash Screen")
         self.stop_animation = True
 
-        self.manager = manager
+        # ensure a manager exists
+        self.manager = manager or Encrypt()
 
         self.show_splash()
 
@@ -52,11 +55,14 @@ class Animation:
     def open_main(self):
         self.stop_animation = False
         self.splash_frame.destroy()
-        Base_page(self.root)
+        # pass the manager to the main page
+        Base_page(self.root, manager=self.manager)
 
-class Base_page(Animation):
-    def __init__(self, root):
+# change Base_page to not inherit from Animation and accept manager
+class Base_page:
+    def __init__(self, root, manager=None):
         self.main_win = root
+        self.manager = manager
         self.main_win.config(bg="#fde6a3")
         self.last_page = None
         current_time_struct = time.localtime()
@@ -95,8 +101,6 @@ class Base_page(Animation):
         
         self.create_account = tk.Button(self.frame4, text="Register", command=self.register, bg="#fde6a3")
         self.create_account.pack(side="right")
-
-        self.main_win.mainloop()
 
     def register(self):
         self.big_frame.pack_forget()
@@ -137,11 +141,11 @@ class Base_page(Animation):
         d = Data(username=username, encrypt_manager=self.manager, filename_template="encrypted_{username}.txt")
         ok = d.pull_data(username)
         if not ok:
-            tk.messagebox.showerror("login failed", "Username not found")
+            messagebox.showerror("login failed", "Username not found")
             return
 
         if d.password != password:
-            tk.messagebox.showerror("login failed", "Incorrect password")
+            messagebox.showerror("login failed", "Incorrect password")
             return
 
         self.current_data = d
@@ -162,7 +166,11 @@ class Base_page(Animation):
         self.quit = tk.Button(self.choosing_frame, text="Quit", command=self.quiting, bg="#fde6a3")
         self.quit.pack()    
 
-    def saving_account(self, balance=0):
+    def saving_account(self, balance=None):
+        # use current account balance if available
+        if balance is None and hasattr(self, "current_data"):
+            balance = self.current_data.balance
+
         self.choosing_frame.pack_forget()
         self.saving_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.saving_frame.pack() 
@@ -178,7 +186,7 @@ class Base_page(Animation):
 
         self.last_page = self.saving_frame
 
-        self.balance_label = tk.Label(self.show_save_info, text="Hello %s!! Your balance is: %d" % (self.enter_username.get(), balance), bg="#fde6a3")
+        self.balance_label = tk.Label(self.show_save_info, text="Hello %s!! Your balance is: %.2f" % (self.enter_username.get(), balance), bg="#fde6a3")
         self.balance_label.pack()
 
         self.interest_label = tk.Label(self.show_save_info, text="Your interest rate is: 2.25%", bg="#fde6a3")
@@ -196,7 +204,11 @@ class Base_page(Animation):
         self.back_to_main = tk.Button(self.quit_leave, text="Back to home page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack(side="right")
 
-    def checking_account(self, balance=0):
+    def checking_account(self, balance=None):
+        # use current account balance if available
+        if balance is None and hasattr(self, "current_data"):
+            balance = self.current_data.balance
+
         self.choosing_frame.pack_forget()
         self.checking_frame = tk.Frame(self.main_win, width=300, height=200, bg="#fde6a3")
         self.checking_frame.pack()
@@ -212,7 +224,7 @@ class Base_page(Animation):
 
         self.last_page = self.checking_frame
 
-        self.c_balance_label = tk.Label(self.show_check_info, text="Hello %s!! Your balance is: %d" % (self.enter_username.get(), balance), bg="#fde6a3")
+        self.c_balance_label = tk.Label(self.show_check_info, text="Hello %s!! Your balance is: %.2f" % (self.enter_username.get(), balance), bg="#fde6a3")
         self.c_balance_label.pack()
 
         self.c_asking = tk.Label(self.chec_choose, text="Would you like to......", bg="#fde6a3")
@@ -295,33 +307,78 @@ class Base_page(Animation):
 
         ok = d.save_data()
         if ok:
-            tk.messagebox.showinfo("Registration Successful", f"{username} has been created")
+            messagebox.showinfo("Registration Successful", f"{username} has been created")
             self.back_main()
         else:
-            tk.messagebox.showerror("Registration Failed", "Could not create account.")
+            messagebox.showerror("Registration Failed", "Could not create account.")
 
     def start_withdraw(self):
-        amount = self.withdraw_enter.get().strip()
-        # Add withdrawal process logic here
-        self.withdraw_confirm.pack_forget()
-        self.last_page = self.withdraw_frame
+        amt = self.withdraw_enter.get().strip()
+        try:
+            amount = float(amt)
+        except ValueError:
+            messagebox.showerror("Invalid amount", "Please enter a valid number.")
+            return
 
-        self.withdraw_success = tk.Label(self.confirm_withdraw, text="Withdraw Success!", bg="#fde6a3")
-        self.withdraw_success.pack()
+        if not hasattr(self, "current_data"):
+            messagebox.showerror("Error", "No account loaded.")
+            return
 
-        self.back_to_main = tk.Button(self.confirm_withdraw, text="Back to main page", bg="#fde6a3", command=self.back_main)
-        self.back_to_main.pack()
+        ok = self.current_data.withdraw(amount, note=f"ATM withdraw at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        if ok:
+            messagebox.showinfo("Success", f"Withdrew {amount:.2f}")
+        else:
+            messagebox.showerror("Failed", "Insufficient funds or invalid amount.")
+
+        # return to checking account view with updated balance
+        self.withdraw_frame.pack_forget()
+        self.checking_account(self.current_data.balance)
 
     def start_deposit(self):
-        amount = self.deposit_enter.get().strip()
-        # Add deposit process logic here
-        self.deposit_confirm.pack_forget()
-        self.last_page = self.deposit_frame
+        amt = self.deposit_enter.get().strip()
+        try:
+            amount = float(amt)
+        except ValueError:
+            messagebox.showerror("Invalid amount", "Please enter a valid number.")
+            return
 
-        self.deposit_success = tk.Label(self.confirm_deposit, text="Deposit Success!", bg="#fde6a3")
-        self.deposit_success.pack()
+        if not hasattr(self, "current_data"):
+            messagebox.showerror("Error", "No account loaded.")
+            return
 
-        self.back_to_main = tk.Button(self.confirm_deposit, text="Back to main page", bg="#fde6a3", command=self.back_main)
-        self.back_to_main.pack()
+        ok = self.current_data.deposit(amount, note=f"ATM deposit at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        if ok:
+            messagebox.showinfo("Success", f"Deposited {amount:.2f}")
+        else:
+            messagebox.showerror("Failed", "Invalid amount.")
+
+        # return to checking account view with updated balance
+        self.deposit_frame.pack_forget()
+        self.checking_account(self.current_data.balance)
+
+    def show_account_home(self):
+        """
+        Called after successful login. Hide any login/register frames and show the
+        account chooser (save_check). Ensures no AttributeError when invoked.
+        """
+        # safely hide known possible previous frames
+        for name in ("big_frame", "register_main", "choosing_frame", "saving_frame", "checking_frame", "withdraw_frame", "deposit_frame"):
+            if hasattr(self, name):
+                try:
+                    getattr(self, name).pack_forget()
+                except Exception:
+                    pass
+
+        # update username entry used in other views (keep displayed username)
+        if hasattr(self, "current_data"):
+            # ensure the login username entry still reflects the current account
+            try:
+                self.enter_username.delete(0, tk.END)
+                self.enter_username.insert(0, self.current_data.username)
+            except Exception:
+                pass
+
+        # show the account chooser
+        self.save_check()
 
 main = Animation()
