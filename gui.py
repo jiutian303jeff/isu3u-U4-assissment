@@ -147,13 +147,18 @@ class Base_page:
         self.enter_password.pack(side="right")
 
         if self.enter_password and self.enter_username is not "":
-            self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.creating_account, bg='#fde6a3')
+            self.account_staus = True
+        else :
+            self.account_staus = False
+
+
+        self.register_button = tk.Button(self.register_main, text="Register a new account", command=self.creating_account, bg='#fde6a3')
+        if self.account_staus == True:
             self.register_button.pack()
-            
-        elif self.enter_password and self.enter_username is "":
+        elif self.enter_password and self.enter_username == False:
             messagebox.showerror("login failed", "Username not found")
             return
-
+        
         self.back_to_main = tk.Button(self.register_main, text="Back to main page", command=self.back_main, bg="#fde6a3")
         self.back_to_main.pack()
 
