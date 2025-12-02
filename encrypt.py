@@ -1,5 +1,5 @@
 """
-author : Leo L.
+author : Leo L. and Jeff J.
 date   : oct 30
 desc   : Simple rotor-like encryptor that generates a deterministic permutation
          from a random seed. The seed is prepended to the ciphertext as

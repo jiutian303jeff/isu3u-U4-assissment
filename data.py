@@ -1,5 +1,5 @@
 """
-author : Leo L.
+author : Leo L. and Jeff J.
 date   : oct 30
 desc   : Data model for simple account storage. The Data class wraps:
          - username, password, balance, transaction_history

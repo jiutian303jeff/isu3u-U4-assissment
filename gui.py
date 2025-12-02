@@ -1,5 +1,5 @@
 """
-author : Leo L.
+author : Leo L. and jeff J.
 date   : oct 30
 desc   : Tkinter GUI for account manager/encryption demo.
        - Animation: splash screen showing GIF frames then opens Base_page
@@ -605,3 +605,5 @@ class Base_page:
                 pass
 
         self.save_check()
+
+main = Animation()
