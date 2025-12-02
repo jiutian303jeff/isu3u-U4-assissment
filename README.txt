@@ -17,3 +17,4 @@ This submission includes three Python files :
 3 : gui.py
     -   this is the file to run the app, 
     -   please be peasion about the intrest rate since it read the actul time for it to add the amoung
+
